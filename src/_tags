@@ -1,0 +1,12 @@
+"db" or "sha1" : include
+
+true : dtypes
+
+<db/data_mapping.*> : syntax_camlp4o, pkg_json-static
+
+<**/*.{ml,mli}> : pkg_sqlite3
+
+<**/*.{ml,mli}> : pkg_json-wheel
+
+<main.{byte,d.byte,native}> : pkg_sqlite3, pkg_json-wheel
+
