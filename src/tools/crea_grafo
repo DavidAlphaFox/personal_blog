@@ -1,0 +1,66 @@
+ocamlfind ocamldoc \
+    -package camltemplate \
+    -package cryptokit \
+    -package netcgi2-plex \
+    -package netclient \
+    -package nethttpd \
+    -package netplex \
+    -package sexplib.syntax \
+    -package sqlite3 \
+    -package lwt-equeue.ssl \
+    -package batteries \
+    -syntax camlp4o \
+    -I ocamlweb \
+    -I ocamlweb/session \
+    -I markup \
+    -I views \
+    -I lib \
+    -I /usr/lib/ocaml/ocamlbuild/ \
+    -dot \
+    -hide-warnings \
+    -dot-reduce \
+    -o graph.dot \
+    \
+    \
+    ./lib/akismet.mli \
+    ./lib/xHTML.mli \
+    ./ocamlweb/parameters_map.mli \
+    ./ocamlweb/session/sqlite3_state.mli \
+    ./ocamlweb/uRL_registry.mli \
+    ./ocamlweb/server.mli \
+    ./lib/xHTML.ml \
+    ./lib/data_mapping.ml \
+    ./lib/blog_lib.ml \
+    ./lib/akismet.ml \
+    ./lib/blog_template.ml \
+    ./lib/utilities.ml \
+    ./lib/options.ml \
+    ./lib/sendmail.ml \
+    ./lib/db.ml \
+    ./ocamlweb/defaults.ml \
+    ./ocamlweb/stdlib.ml \
+    ./ocamlweb/signatures.ml \
+    ./ocamlweb/server.ml \
+    ./ocamlweb/template.ml \
+    ./ocamlweb/parameters_map.ml \
+    ./ocamlweb/session/session_common.ml \
+    ./ocamlweb/session/sqlite3_state.ml \
+    ./ocamlweb/uRL_registry.ml \
+    ./ocamlweb/http.ml \
+    ./views/single_post.ml \
+    ./views/multi_post.ml \
+    ./views/login.ml \
+    ./views/common_fragments.ml \
+    ./views/post_list.ml \
+    ./views/pages.ml \
+    ./views/dashboard.ml \
+    ./views/post_edit.ml \
+    ./lib/config.ml \
+    ./markup/markup.ml \
+    ./markup/markup_types.ml \
+    ./views/feed.ml \
+    ./blog.ml
+
+dot -Tsvg -o graph.svg graph.dot
+
+    # ./markup/markup_parser.ml \

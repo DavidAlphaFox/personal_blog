@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <atom:link href="${post.permalink}/feed/" rel="self" type="application/rss+xml" />
+    <lastBuildDate>${mk_mail_date(0, last_build_date)}</lastBuildDate>
+    <title>Comments to “${post.title}”</title>
+    <description>Paolo Donadeo's personal Internet site and blog</description>
+    <link>${post.permalink}</link>
+    <managingEditor>pdonadeo@tautologica.org (Paolo Donadeo)</managingEditor>
+
+    #foreach (comment in post.post_comments)
+      <item>
+        <title>By: ${comment.author_name}</title>
+        <link>${post.permalink}\#comment-${comment.id}</link>
+        <guid isPermaLink="true">${post.permalink}\#comment-${comment.id}</guid>
+        <pubDate>${mk_mail_date(0, comment.comment_time)}</pubDate>
+        <dc:creator>${comment.author_name}</dc:creator>
+        <description>${escape_xml(comment.content)}</description>
+      </item>
+
+    #end
+  </channel>
+</rss>
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

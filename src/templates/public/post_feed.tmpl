@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rss version='2.0'
+     xmlns:atom='http://www.w3.org/2005/Atom'
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+  <channel>
+    #if (facets_path)
+      <atom:link href="${abs_url("/facets/" + facets_path + "/feed/")}" rel="self" type="application/rss+xml" />
+    #else
+      <atom:link href="${abs_url("/feed/")}" rel="self" type="application/rss+xml" />
+    #end
+    <lastBuildDate>${mk_mail_date(0, last_build_date)}</lastBuildDate>
+    <title>${blog_title}#if (feed_title)/${feed_title}#end#</title>
+    <description>Paolo Donadeo's personal Internet site and blog</description>
+    <link>${abs_url("/")}</link>
+    <managingEditor>pdonadeo@tautologica.org (Paolo Donadeo)</managingEditor>
+
+    #foreach (post in posts)
+      <item>
+        <title>${post.title}</title>
+        <link>${post.permalink}</link>
+        <guid isPermaLink="true">${post.permalink}</guid>
+        <author>pdonadeo@tautologica.org (Paolo Donadeo)</author>
+        <pubDate>${mk_mail_date(0, post.ctime)}</pubDate>
+        <atom:updated>${format_date("%Y-%m-%dT%T.000Z", post.mtime)}</atom:updated>
+
+        #foreach (tag in post.tags)
+          <category>${tag.text}</category>
+        #end
+
+        <description>${escape_xml("<h3>" + post.title + "</h3><br />")}${escape_xml(post.content)}</description>
+
+        #if (post.comments_count)
+          <comments>${post.permalink}\#commentary</comments>
+          <wfw:commentRss>${post.permalink}/feed</wfw:commentRss>
+          <slash:comments>${post.comments_count}</slash:comments>
+        #end
+      </item>
+
+    #end
+  </channel>
+</rss>
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

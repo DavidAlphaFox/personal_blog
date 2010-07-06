@@ -1,0 +1,4 @@
+wget -k -E --no-cookies \
+    --header "Cookie: session_id=22cdfc72e1f80cab1e598250df8ef5763712c216" \
+    -m http://www.donadeo.net
+

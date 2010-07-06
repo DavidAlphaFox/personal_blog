@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+                      "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+#open ("public/macros.tmpl")
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  #html_head_element (page_title, js_object_name)
+
+  <body>
+    <div id="wrapper">
+      #include ("public/old_browser.tmpl")
+
+      ${top_menu}
+
+      #include ("public/blog_title.tmpl")
+
+      <div id="content" class="col">
+          <div class="post-content page">
+            <h2>${page_title}</h2>
+
+            #if (auth_ok)
+              ${page_content}
+            #else
+              <div class="left-column">
+                <p class="noindent">
+                  Questa pagina è protetta da una password. Per poterla
+                  leggere inserite la password qui sotto:
+                </p>
+              </div>
+              <div class="right-column">
+                <p class="noindent">
+                  This post is password protected. To view it please enter
+                  your password below:
+                </p>
+              </div>
+              <br style="clear: both;" />
+
+              <form method="post" action="${abs_url(page_url)}">
+                #if (error)
+                  <p style="border: 2px solid \#880000; width: 15em;" class="noindent">
+                    Password errata!
+                    <br />
+                    Wrong password!
+                  </p>
+                #end
+
+                <p class="noindent" style="width: 15em;">
+                  <label for="page_password"
+                         style="font-size: 1.0em;">Password:</label>
+                  <input type="password" tabindex="1" size="20" value=""
+                         id="page_password" name="page_password"
+                         style="width: 10em; font-size: 1.0em;" />
+                  <input type="hidden" name="page_id" id="page_id" value="${page_id}" />
+                  <input type="submit" tabindex="2" value="Unlock this page"
+                         id="submit-button" name="submit-button"
+                         style="width: 10em; margin-top: 0.5em; font-size: 1.0em;" />
+                </p>
+              </form>
+            #end
+          </div>
+      </div> <!-- id="content" -->
+
+      <!-- F O O T E R   H E R E -->
+      #page_footer()
+
+      #include ("public/footnotes.tmpl")
+
+    </div> <!-- id="wrapper" -->
+  </body>
+</html>
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

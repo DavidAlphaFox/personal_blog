@@ -1,0 +1,31 @@
+      <!-- div id="footnotes" style="display: none;" -->
+      <div id="footnotes">
+        <p>Copyright © 2004–${format_date("%Y", gettimeofday())} <span class="low">by </span> <span class="cnbyb"></span>.
+          <br />
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/it/">
+            <img alt="Creative Commons License" style="border-width: 0; vertical-align: middle;"
+                 src="/static/images/cc_by-nc-sa_80x15.png" />
+          </a>
+          Content on this site is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/it/">Creative Commons Attribution-Noncommercial-Share Alike 2.5 Italy License</a>.
+        </p>
+
+        <p>
+          #if (rss_link)
+            <a class="rss" title="Syndicate this site using RSS"
+               href="${abs_url("/feed")}">
+              <acronym title="Really Simple Syndication">RSS</acronym> Feed</a>.
+          #end
+          <a title="Test Document Validity" href="http://validator.w3.org/check/referer">Valid XHTML 1.1</a>.
+          This blog is written <span class="low">in</span>
+          <a href="http://caml.inria.fr/ocaml/index.en.html">Objective Caml</a>.
+          Design based on the <span class="low">work</span> of
+          <a href="http://www.rodrigogalindez.com">Rodrigo Galindez</a>.
+        </p>
+      </div> <!-- id="footnotes" -->
+
+      #if (google_analytics && !debug)
+        <!-- GOOGLE ANALYTICS -->
+        #include ("public/google_analytics.tmpl")
+      #end
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

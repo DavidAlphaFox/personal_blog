@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+                      "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+#open ("public/macros.tmpl")
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  #html_head_element (page_title, js_object_name)
+
+  <body>
+    <div id="wrapper">
+      #include ("public/old_browser.tmpl")
+
+      ${top_menu}
+
+      #include ("public/blog_title.tmpl")
+
+      <div id="content" class="col">
+        <div id="content-header" class="col last">
+          <h2 class="ver small">${content_header}</h2>
+        </div>
+
+        <!-- P O S T   L I S T   H E R E -->
+        #foreach (post in posts)
+          #display_post (post)
+        #end
+
+        #if (prev_page || next_page)
+          <ul class="navigation">
+            #if (prev_page)
+              <li class="right"><a href="${abs_url(pagination_url)}?page=${prev_page}">Newer Articles →</a></li>
+            #end
+            #if (next_page)
+              <li class="left"><a href="${abs_url(pagination_url)}?page=${next_page}">← Older Articles</a></li>
+            #end
+          </ul>
+        #end
+
+      </div> <!-- id="content" -->
+
+      <!-- F O O T E R   H E R E -->
+      #page_footer()
+
+      #include ("public/footnotes.tmpl")
+
+    </div> <!-- id="wrapper" -->
+  </body>
+</html>
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

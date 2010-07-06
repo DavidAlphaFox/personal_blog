@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+                      "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+#open ("public/macros.tmpl")
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  #html_head_element (post.title, js_object_name)
+
+  <body>
+    <div id="wrapper">
+      #include ("public/old_browser.tmpl")
+
+      ${top_menu}
+
+      #include ("public/blog_title.tmpl")
+
+      <div id="content" class="col">
+        <div id="content-header" class="col last">
+          <h2 class="ver small">You are reading</h2>
+        </div>
+
+        #display_post (post)
+      </div> <!-- id="content" -->
+
+      <!-- C O M M E N T S   H E R E -->
+      #if (post.post_comments)
+        <div class="col" id="commentary">
+          <div class="col">
+            <h4 class="ver small">Comments for this article</h4>
+          </div>
+        </div>
+
+        #foreach (comment in post.post_comments)
+          <div id="comment-${comment.id}" class="comment">
+            <div class="comment-meta col">
+              <p class="date small">${format_date(current_tz, "%e %B %Y, %H:%M", comment.comment_time)}</p>
+              <dl>
+                <dt>
+                  #if (comment.author_url)
+                    <strong style="font-size:1.2em; line-height:1.6;">
+                      <a class="url" rel="external nofollow"
+                         href="${comment.author_url}">${comment.author_name}</a></strong>
+                  #else
+                    <strong style="font-size:1.2em; line-height:1.6;">${comment.author_name}</strong>
+                  #end
+                </dt>
+                <dd>
+                  <img style="margin-top: 1em;"
+                       alt="User Gravatar"
+                       src="http://www.gravatar.com/avatar/${comment.gravatar}?rating=X&amp;size=64&amp;default=wavatar" />
+                </dd>
+              </dl>
+            </div>
+
+            <div class="comment-text">
+              ${comment.content}
+            </div>
+          </div>
+        #end
+      #end
+
+      #if (moderation)
+          <div id="comment-moderated" class="comment">
+            <div class="comment-meta col">
+            </div>
+
+            <div class="comment-text">
+              <div>
+                <p>Your comment will be approved as soon as possible.</p>
+              </div>
+            </div>
+          </div>
+      #end
+
+      #if (post.comments)   #* If comments are enabled *#
+        <div class="col" id="leave-comment">
+            <div class="col last title">
+                <h4 style="padding-left: 0;" class="ver small">Leave your comment</h4>
+                <p style="padding-left: 0; margin-bottom: 0;">
+                  Please be polite. You can use wiki-like syntax to format the text:
+                </p>
+                <ul style="margin: 0em 1em 1em 2em;">
+                  <li>bold: use <tt>**hello**</tt> to get <strong>hello</strong>;</li>
+                  <li>italic: use <tt>//hello//</tt> to get <em>hello</em>;</li>
+                  <li>a blank line starts a new paragraph.</li>
+                </ul>
+            </div>
+
+          <form id="commentform" method="post" action="${post.permalink}\#leave-comment">
+            <div class="comment-field">
+              <div class="labels-col col">
+                <label for="author">Name</label>
+              </div>
+
+              <div class="input-col col">
+                <input #if (author_error) class="red-border" #end# type="text" tabindex="1" value="${comment_author}" id="author" name="author"/>
+              </div>
+
+              <div class="col last">
+                <p><small class="tooltip">Required.</small></p>
+              </div>
+            </div>
+
+            <div class="comment-field">
+              <div class="labels-col col">
+                <label for="email">E-mail</label>
+              </div>
+
+              <div class="input-col col">
+                <input #if (email_error) class="red-border" #end# type="text" tabindex="2" value="${comment_email}" id="email" name="email"/>
+              </div>
+
+              <div class="col last">
+                <p><small class="tooltip">Required. Won't be published.</small></p>
+              </div>
+            </div>
+
+            <div class="comment-field">
+              <div class="labels-col col">
+                <label for="url">Website</label>
+              </div>
+
+              <div class="input-col col">
+                <input type="text" tabindex="3" value="${comment_url}" id="url" name="url"/>
+              </div>
+            </div>
+
+            <div class="comment-field">
+              <div class="labels-col col">
+                <label for="comment">Comment</label>
+              </div>
+
+              <div class="textarea-col">
+                <textarea #if (comment_error) class="red-border" #end#  rows="10" cols="10" tabindex="4" id="comment" name="comment">${comment}</textarea>
+              </div>
+            </div>
+
+            <div class="comment-field col last-field">
+              <input type="submit" title="PREVIEW COMMENT" alt="PREVIEW COMMENT"
+                     value="↪ PREVIEW COMMENT" tabindex="5"
+                     id="preview-comment" name="preview-comment" />
+
+              <input type="submit" title="POST COMMENT" alt="POST COMMENT"
+                     value="↪ POST COMMENT" tabindex="6"
+                     id="submit-comment" name="submit-comment" />
+
+              <input type="hidden" value="${post.post_id}" name="post_id" />
+            </div>
+          </form>
+        </div> <!-- id="leave-comment" -->
+
+        #var (invisible = "invisible")
+        #if (preview_present)
+          #set (invisible = "")
+        #end
+        <div id="comment-preview" class="comment ${invisible}">${comment_preview}</div>
+
+      #else
+        <div class="col" id="leave-comment">
+          <div class="col last title">
+            <h4 style="padding-left: 0;" class="ver small"><em>Comments are closed</em></h4>
+          </div>
+        </div> <!-- id="leave-comment" -->
+      #end
+
+      <!-- F O O T E R   H E R E -->
+      #page_footer()
+
+      #include ("public/footnotes.tmpl")
+
+    </div> <!-- id="wrapper" -->
+  </body>
+</html>
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

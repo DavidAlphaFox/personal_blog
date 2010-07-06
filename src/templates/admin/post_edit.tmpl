@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <!-- The head element is generated -->
+    #open ("admin/macros.tmpl")
+    ${admin_head}
+    ${head}
+  </head>
+
+  <body>
+    <div id="doc3" class="yui-t1">
+
+      <!-- HEADER -->
+      ${admin_header}
+
+      <!-- BODY -->
+      <div id="bd">
+        ${admin_menu}
+
+        <div id="yui-main">
+          <div class="yui-b">
+            <div class="yui-ge">
+              <h2>${page_h2}</h2>
+              <form id="post_form" method="post" action="/post-edit">
+                <!-- POST MAIN PANEL -->
+                <div id="post-main-panel" class="yui-u first">
+                  #if (post_id)
+                    <input type="hidden" name="post_id" value="${post_id}" />
+                  #end
+                  <input type="text" id="post_title" tabindex="1" size="30" name="post_title"
+                         value="${post_title}" />
+                  <div id="edit-slug-box">
+                    <div style="margin-bottom: 20px;">
+                      <strong>Permalink:</strong>
+                      ${abs_url("/post/" + post_year + "/")}
+                      <input tabindex="2" type="text" value="${post_slug}"
+                             id="new_post_slug" name="new_post_slug"/>
+                    </div>
+                  </div>
+                  <div class="title_box">
+                    <h3>Post content: (Markup!)</h3>
+                    <div class="inside">
+                      <textarea tabindex="3" id="post_content" name="post_content"
+                                rows="20" cols="66">${post_content}</textarea>
+                    </div>
+                  </div>
+                  <div class="title_box">
+                    <h3>Excerpt: (in HTML!)</h3>
+                    <div class="inside">
+                      <textarea tabindex="4" id="post_excerpt" name="post_excerpt" rows="5"
+                                cols="66">${post_excerpt}</textarea>
+                    </div>
+                  </div>
+                  <div id="tag_box" class="title_box">
+                    <h3>Tags</h3>
+                    <div class="inside" style="padding: 6px; overflow: auto; max-height: 320px">
+                      ${tags_table}
+                    </div>
+                  </div>
+                  <div class="title_box">
+                    <h3>Discussion and visibility:</h3>
+                    <div class="inside">
+                      <p style="margin: 6px;">
+                        <label for="comment_status" style="cursor: pointer;">
+                          <input tabindex="5" type="checkbox"
+                                 #checked_of_bool(comment_status)
+                                 id="comment_status" name="comment_status" />
+                          Allow comments on this post
+                        </label>
+                        <br />
+                        <label for="ping_status" style="cursor: pointer;">
+                          <input tabindex="6" type="checkbox"
+                                 #checked_of_bool(ping_status)
+                                 id="ping_status" name="ping_status" />
+                          Allow trackbacks and pingbacks on this post
+                        </label>
+                        <br />
+                        <label for="private_status" style="cursor: pointer;">
+                          <input tabindex="7" type="checkbox" id="private_status"
+                                 #checked_of_bool(private_status)
+                                 name="private_status" />
+                          Is this post private?
+                        </label>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <!-- POST SIDEBAR -->
+                <div id="post-sidebar" class="yui-u">
+                  <div id="buttons_box" class="title_box">
+                    <h3>Publish</h3>
+                    <div class="inside">
+                      <div style="padding: 6px;">
+                        <input id="draft_button" tabindex="8" type="submit"
+                               name="draft_button" value="Save Draft" />
+                        <br />
+                        <input id="publish_button" tabindex="9" type="submit"
+                               name="publish_button" value="Publish" />
+                        <br />
+                        <input id="delete_button" tabindex="10" type="submit"
+                               name="delete_button" value="Delete this Post" />
+                        <br />
+                        <div style="margin: 4px 0px 4px 0px;">
+                          #if (pub_status != 0)
+                            #if (pub_status == 1)
+                              <a tabindex="11" id="post_preview"
+                                 href="${abs_url("/preview/" + post_id)}"
+                                 class="preview button">Preview</a>
+                            #else
+                              <strong>Published</strong><br />
+                              <a href="${permalink}">View this post...</a>
+                            #end
+                          #end
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="ts_box" class="title_box">
+                    <h3>Timestamps (Localtime)</h3>
+                    <div class="inside" style="padding: 6px;">
+                      <div id="data" style="border: 1px solid \#DFDFDF; padding: 0.25em;">
+                        <fieldset>
+                          <legend><strong>Creation time</strong></legend>
+                          <span id="original_ctime">${format_date(current_tz, "%Y-%m-%d %T", ctime)}</span>
+                        </fieldset>
+                        <fieldset>
+                          <legend><strong>Last modified</strong></legend>
+                          <span id="original_mtime">${format_date(current_tz, "%Y-%m-%d %T", mtime)}</span>
+                        </fieldset>
+                      </div>
+                      <input id="ts_change" type="button"
+                             name="ts_change" value="Change" />
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      #include ("admin/footer.tmpl")
+    </div> <!-- id="doc3" -->
+  </body>
+</html>
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

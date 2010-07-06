@@ -1,0 +1,8 @@
+true : dtypes, debug
+"session" : include
+"test" : include
+
+<**/*.{ml,mli}> : pkg_netplex, pkg_nethttpd, pkg_camltemplate, pkg_netcgi2-plex
+<**/*.{ml,mli}> : pkg_netstring, pkg_batteries
+<signatures.*> : syntax_camlp4o, pkg_sexplib.syntax
+

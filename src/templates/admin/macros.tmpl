@@ -1,0 +1,104 @@
+#*****************************#
+#* C O M M O N   M A C R O S *#
+#*****************************#
+
+#macro checked_of_bool (value)
+  #var (return_value)
+  #if (value == true)
+    #set (return_value = "checked=\"checked\"")
+  #else
+    #set (return_value = "")
+  #end
+  ${return_value}
+#end
+
+
+#***********************************#
+#* P O S T   L I S T   M A C R O S *#
+#***********************************#
+#macro post_in_a_row (post, is_odd)
+  #var (alternate)
+  #var (draft)
+  #var (row_action)
+  #var (author)
+  #var (disp_time)
+  #var (last_mod)
+
+  #set (ctime = post.ctime)
+
+  #if (is_odd == true)
+    #set (alternate = "alternate")
+  #else
+    #set (alternate = "")
+  #end
+  #if (post.status == false)
+    #set (draft = " - <span class=\"post-state\">Draft</span>")
+    #set (disp_time = post.mtime)
+    #set (last_mod = "Last Modified")
+
+    #set (row_action =
+"    <div class=\"row-actions\">" +
+"      <span class=\"view\">" +
+"        <a rel=\"permalink\"" +
+"           title=\"Preview “" + post.title + "”\"" +
+"           href=\"/preview/" + post.post_id + "\">Preview</a>" +
+"      </span>" +
+"    </div>")
+  #else
+    #set (draft = "")
+    #set (disp_time = post.ctime)
+    #set (last_mod = "Published")
+
+    #set (row_action =
+"    <div class=\"row-actions\">" +
+"      <span class=\"view\">" +
+"        <a rel=\"permalink\"" +
+"           title=\"View “" + post.title + "”\"" +
+"           href=\"" + post.permalink + "\">View post</a>" +
+"      </span>" +
+"    </div>")
+  #end
+
+  #if (post.displ_name)
+    #set (author = post.displ_name)
+  #else
+    #set (author = post.email)
+  #end
+
+<tr valign="top" class="${alternate} author-self status-draft iedit" id="post-${post.post_id}">
+  <td class="post-title column-title">
+    <strong><a title="Edit “${post.title}”"
+               href="/post-edit/${post.post_id}"
+               class="row-title">${post.title}</a>${draft}
+    </strong>
+    ${row_action}
+  </td>
+  <td class="author column-author"><strong>${author}</strong></td>
+  <td class="categories column-categories">
+    #if (post.tags)
+      #set (tag_i = 1)
+      #foreach (tag in post.tags)
+        ${tag.text}#if (tag_i != post.tags_count), #end#
+        #set (tag_i = tag_i + 1)
+      #end
+    #else
+      <em>No categories for this post</em>
+    #end
+  </td>
+  <td class="comments column-comments">
+    <div class="post-com-count-wrapper">
+      <a class="post-com-count" title="${post.comments_count} comments"
+         href="/comments-list?p=${post.post_id}"><span class="comment-count">${post.comments_count}</span></a>
+    </div>
+  </td>
+  <td class="date column-date">
+    <abbr title="${format_date(current_tz, "%Y/%m/%d %H:%M:%S %z", disp_time)}">
+      ${format_date(current_tz, "%Y/%m/%d", disp_time)}
+    </abbr>
+    <br/>
+    ${last_mod}
+  </td>
+</tr>
+#end
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <!-- The head element is generated -->
+    #open ("admin/macros.tmpl")
+    ${admin_head}
+    <script type="text/javascript" src="/static/js/admin.js"></script>
+    <script type="text/javascript">//<![CDATA[
+      $(document).ready(
+          function() {
+              Admin.common.init_eventi_gui();
+              Admin.dashboard_page.init_eventi_gui();
+          }
+      );
+      //]]>
+    </script>
+  </head>
+
+  <body>
+    <div id="doc3" class="yui-t1">
+
+      <!-- HEADER -->
+      ${admin_header}
+
+      <!-- BODY -->
+      <div id="bd">
+        ${admin_menu}
+
+        <div id="yui-main">
+          <div class="yui-b">
+            <div class="yui-ge" style="margin-right: 15px;">
+              #if (message)
+                #if (message == "message-deleted")
+                  #set (actual_message = "The message has been deleted.")
+                #end
+                <p style="margin-top: 25px;" class="message message-box">${actual_message}</p>
+              #end
+
+              <h2>Post List</h2>
+              <ul class="subsubsub">
+                #if (! post_status)
+                  #set (all_posts = "current")
+                #elseif (post_status == "publish")
+                  #set (pub_posts = "current")
+                #elseif (post_status == "draft")
+                  #set (draft_posts = "current")
+                #end
+                <li><a class="${all_posts}"   href="/post-list">All <span class="count">(${count_all})</span></a> |</li>
+                <li><a class="${pub_posts}"   href="/post-list?post_status=publish">Published <span class="count">(${count_published})</span></a> |</li>
+                <li><a class="${draft_posts}" href="/post-list?post_status=draft">Drafts <span class="count">(${count_draft})</span></a></li>
+              </ul>
+              <p class="search-box">
+                <label for="post-search-input" class="screen-reader-text">Search Posts:</label>
+                <input type="text" value="" name="s" id="post-search-input"/>
+                <input type="submit" class="button" id="post-search-button" value="Search Posts"/>
+              </p>
+              ${tablenav}
+              #macro table_head_foot()
+                  <tr>
+                    <th class="manage-column column-title" id="title" scope="col">Post</th>
+                    <th class="manage-column column-author" id="author" scope="col">Author</th>
+                    <th class="manage-column column-categories" id="categories" scope="col">Categories</th>
+                    <th class="manage-column column-comments num" id="comments" scope="col"><div class="vers"><img src="../static/images/comment-grey-bubble.png" alt="Comments"/></div></th>
+                    <th class="manage-column column-date" id="date" scope="col">Date</th>
+                  </tr>
+              #end
+              <table class="widefat post fixed" cellspacing="0">
+                <thead>
+                  #table_head_foot()
+                </thead>
+                <tfoot>
+                  #table_head_foot()
+                </tfoot>
+                <tbody>
+                  #if (post_list)
+                    #set (is_odd = true)
+                    #foreach (post in post_list)
+                      #post_in_a_row (post, is_odd)
+
+                      #if (is_odd == true)
+                        #set (is_odd = false)
+                      #else
+                        #set (is_odd = true)
+                      #end
+                    #end
+                  #else
+                    <p style="margin: 0.5em; padding: 0.5em;">
+                      <strong><em>No posts available</em></strong>
+                    </p>
+                  #end
+                </tbody>
+              </table>
+              ${tablenav}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      #include ("admin/footer.tmpl")
+    </div> <!-- id="doc3" -->
+  </body>
+</html>
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

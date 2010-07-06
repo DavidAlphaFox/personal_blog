@@ -1,0 +1,7 @@
+true : dtypes, debug
+
+<**/*.{ml,mli}> : pkg_netplex, pkg_nethttpd, pkg_netcgi2-plex
+
+<parameters_test.ml> : pkg_oUnit
+<parameters_test.{byte,d.byte,p.native,native}> : pkg_oUnit, pkg_str
+

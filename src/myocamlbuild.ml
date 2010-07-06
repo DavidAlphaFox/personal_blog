@@ -30,8 +30,10 @@ let _ = dispatch begin function
 
        (* Compile and link *)
        flag ["link"; "ocaml"; "byte"] (A"-custom");
-       dep ["link"; "ocaml"] ["sha1/sha1_stubs.o"];
-       dep ["file:sha1/sha1_stubs.c"] ["sha1/op.h"];
+(*
+       dep ["link"; "ocaml"] ["lib/sha1/sha1_stubs.o"];
+       dep ["file:lib/sha1/sha1_stubs.c"] ["lib/sha1/op.h"];
+*)
        flag ["c"; "compile"] &
          (*S[A"-ccopt"; A"-O3"; A"-ccopt"; A"-Wall"; A"-ccopt"; A"-pg"];*)
          S[A"-ccopt"; A"-O3"; A"-ccopt"; A"-Wall"];

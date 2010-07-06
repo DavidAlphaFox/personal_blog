@@ -1,0 +1,171 @@
+#*****************************#
+#* C O M M O N   M A C R O S *#
+#*****************************#
+
+#macro html_head_element (page_title, js_object_name)
+  <head>
+    <!-- The head element is generated -->
+
+    <title>${blog_title()} › ${page_title}</title>
+    <meta content="Paolo Donadeo" name="author" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <!-- Google webmaster tools verification -->
+    <meta name="google-site-verification" content="0WsASMd43df8D28glZ6z_Rgfex3H8hC8-mczqM1t-Lg" />
+
+    <!-- The YUI CSS Foundation -->
+    <link rel="stylesheet" type="text/css" href="${abs_url("/static/yui/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css")}" />
+    <link rel="stylesheet" type="text/css" href="${abs_url("/static/yui/2.7.0/build/base/base-min.css")}" />
+
+    <!-- My admin style sheet -->
+    <link rel="stylesheet" type="text/css" href="${abs_url("/static/css/blog.css")}" />
+
+    #if (rss_link)
+    <!-- RSS -->
+    <link href="${rss_link}" rel="alternate" title="${blog_title()}#if (feed_title)/${feed_title}#end# — RSS" type='application/rss+xml' />
+
+    #end
+    <!-- jQuery -->
+    <script type="text/javascript" src="${abs_url("/static/jquery/1.3.2/jquery-1.3.2.min.js")}"></script>
+
+    <!-- scrollTo plugin -->
+    <script type="text/javascript" src="${abs_url("/static/jquery/1.3.2/jquery.scrollTo-min.js")}"></script>
+
+    <!-- Javascript for this page -->
+    <script type="text/javascript" src="${abs_url("/static/js/common.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/js/blog.js")}"></script>
+
+    <!-- Syntax Highlighter -->
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shCore.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushBash.js")}"></script>
+    <!-- script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushCpp.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushCSharp.js")}"></script -->
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushCss.js")}"></script>
+    <!-- script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushDelphi.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushDiff.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushGroovy.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushJava.js")}"></script -->
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushJScript.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushPhp.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushPlain.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushPython.js")}"></script>
+    <!-- script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushRuby.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushScala.js")}"></script -->
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushSql.js")}"></script>
+    <!-- script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushVb.js")}"></script>
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushXml.js")}"></script -->
+    <script type="text/javascript" src="${abs_url("/static/syntaxhighlighter/2.0.320/scripts/shBrushOCaml.js")}"></script>
+    <link type="text/css" rel="stylesheet" href="${abs_url("/static/syntaxhighlighter/2.0.320/styles/shCore.css")}" />
+    <link type="text/css" rel="stylesheet" href="${abs_url("/static/syntaxhighlighter/2.0.320/styles/shThemeDefault.css")}" />
+
+    #if (js_object_name)
+    <script type="text/javascript">//<![CDATA[
+      $(document).ready(
+          function() {
+              Blog.common.init_gui_events();
+              Blog.${js_object_name}.init_gui_events();
+          }
+      );
+      //]]>
+    </script>
+    #end
+    <script type="text/javascript">//<![CDATA[
+      $(document).ready(
+          function() {
+              SyntaxHighlighter.config.clipboardSwf = '${abs_url("/static/syntaxhighlighter/2.0.320/scripts/clipboard.swf")}';
+              SyntaxHighlighter.all();
+          }
+      );
+      //]]>
+    </script>
+
+    <!-- NAVIGATION LINKS -->
+    ${navigations_links}
+
+  </head>
+#end
+
+#macro post_meta (post)
+  <div class="post-meta col">
+    <ul class="nav">
+      #var (year = format_date("%Y", post.mtime))
+      <li>${format_date("%e %B", post.mtime)}
+          <a title="Archive of Articles written in ${year}"
+             href="${abs_url("/" + year)}">${year}</a></li>
+      <li>Facets:
+      #var (i = 1)
+      #foreach (tag in post.tags)
+        #var (url = abs_url("/facets" + tag.slug_path))
+        <a rel="tag" title="View all articles in “${tag.text}”"
+           href="${url}">${tag.text}</a>#if (i < len(post.tags)),
+        #end
+        #set (i = i + 1)
+      #end
+
+      </li>
+      #if (post.comments_count)
+        #var (comm_str = "")
+        #if (post.comments_count == 1)
+          #set (comm_str = "comment")
+        #else
+          #set (comm_str = "comments")
+        #end
+        <li><a title="${post.comments_count} ${comm_str} for “${post.title}”"
+               href="${post.permalink}\#commentary">${post.comments_count} ${comm_str}</a></li>
+      #else
+        <li>No comments yet</li>
+      #end
+    </ul>
+  </div>
+#end
+
+#macro display_post (post)
+  <div class="post">
+
+    #post_meta(post)
+
+    <div class="post-content">
+      <h3>
+        <a title="Permanent Link to “${post.title}”"
+           rel="bookmark"
+           href="${post.permalink}">${post.title}</a>
+      </h3>
+
+      #if (post.summary && enable_summary)
+        ${post.summary}
+        <a href="${post.permalink}">Read more…</a>
+      #else
+        ${post.content}
+      #end
+    </div>
+  </div> <!-- class="post" -->
+#end
+
+#macro page_footer()
+  <div id="footer-band">
+    <h2>More (useless) info…</h2>
+  </div>
+
+  <!-- div id="footer" style="display: none;" -->
+  <div id="footer">
+    <div class="section" style="width: 28em;">
+      <h2 class="ver small">Facets</h2>
+      <ul id="facets-par">${facets()}</ul>
+
+      <h2 style="margin-top: 2em;" class="ver small">Recent Posts</h2>
+      <ul class="nav">${recent_posts()}</ul>
+    </div>
+    <!--
+    <div class="section">
+      <h4 class="ver small">Recent Posts</h4>
+      <p>${recent_posts()}</p>
+    </div>
+    -->
+
+    #include ("public/blogroll.tmpl")
+
+    #include ("public/make_a_present.tmpl")
+  </div> <!-- id="footer" -->
+#end
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

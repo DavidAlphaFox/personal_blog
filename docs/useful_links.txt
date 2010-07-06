@@ -1,4 +1,0 @@
-About pingback and trackback:
-    http://www.sixapart.com/pronet/docs/trackback_spec
-    http://www.hixie.ch/specs/pingback/pingback
-

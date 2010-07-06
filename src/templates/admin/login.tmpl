@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <!-- The head element is generated -->
+    ${admin_head}
+    ${head}
+  </head>
+
+  <body>
+        <div id="doc3" class="yui-t1">
+            <!-- HEADER -->
+            <div id="hd">
+              <h1><a href="/">${blog_title()}</a></h1>
+            </div>
+
+            <div id="login-container">
+                <!-- LOGIN FORM -->
+                <h2>Blog Admin</h2>
+                #if (error_message)
+                  ${error_message}
+                #end
+
+                #if (logout_message)
+                  ${logout_message}
+                #end
+                <form id="login-form" action="/login" method="post">
+                    <p>     <!-- LOGIN -->
+                        <label>
+                            Username (your email)
+                            <br />
+                            <input type="text" tabindex="10" size="20" value=""
+                                   class="input" id="user_login" name="login" />
+                        </label>
+                    </p>
+                    <p>     <!-- PASSWORD -->
+                        <label>
+                            Password
+                            <br />
+                            <input type="password" tabindex="20" size="20" value=""
+                                   class="input" id="user_pwd" name="pwd" />
+                        </label>
+                    </p>
+                    <p class="alignright"
+                       style="margin-bottom: 0px;">
+                        <input type="submit" tabindex="100" value="Log In"
+                               id="submit" name="Log In" />
+                    </p>
+                    <hr style="clear: both; width: 0px; border: 0px; margin: 0px;" />
+                </form>
+            </div> <!-- end id="login-container" -->
+        </div>
+  </body>
+</html>
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#

@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+                      "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+#open ("public/macros.tmpl")
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  #html_head_element (page_title, js_object_name)
+
+  <body>
+    <div id="wrapper">
+      #include ("public/old_browser.tmpl")
+
+      ${top_menu}
+
+      #include ("public/blog_title.tmpl")
+
+      <div id="content" class="col">
+          <div class="post-content page">
+            <h2>Create a short URL</h2>
+
+            #if (short_url)
+            <p>Your short URL is: <a href="${short_url}">${short_url}</a></p>
+            #end
+
+            <form method="post" action="${abs_url("/u/")}">
+              <p class="noindent" style="width: 100%;">
+                <label for="long_url"
+                       style="font-size: 1.0em;">Enter long URL here:</label>
+                <input type="text" tabindex="1" value=""
+                       id="long_url" name="long_url" maxlength="1024"
+                       style="width: 95%; font-size: 1.0em;" />
+                <input type="submit" tabindex="2" value="Give me the short URL!"
+                       id="submit-button" name="submit-button"
+                       style="width: 12em; margin-top: 0.5em; font-size: 1.0em;" />
+              </p>
+            </form>
+          </div>
+      </div> <!-- id="content" -->
+
+      <!-- F O O T E R   H E R E -->
+      #page_footer()
+
+      #include ("public/footnotes.tmpl")
+
+    </div> <!-- id="wrapper" -->
+  </body>
+</html>
+
+#*  vim:set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab syntax=htmlcheetah tw=2000: *#
