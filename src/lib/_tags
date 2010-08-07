@@ -6,8 +6,7 @@ true : debug
 <akismet.*> : pkg_netclient
 <validators.*> : pkg_pcre
 <utilities.*> : pkg_cryptokit
-<global_init.*> : pkg_ssl, pkg_lwt-equeue.ssl
-<blog.*> : pkg_cryptokit, pkg_ssl, thread, pkg_lwt-equeue
-<sendmail.*> : pkg_lwt-equeue.ssl, thread, pkg_equeue
+<blog.*> : pkg_cryptokit, pkg_ssl, thread
+<sendmail.*> : pkg_lwt-equeue, thread, pkg_lwt, pkg_ssl
 <xHTML.*> : pkg_xnc-core, pkg_xnc-serialization, pkg_xnc-server
 <db.*> : pkg_sqlite3

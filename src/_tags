@@ -9,7 +9,8 @@
 <blog.{byte,d.byte,p.native,native}> : pkg_netsys, pkg_netplex, pkg_nethttpd
 <blog.{byte,d.byte,p.native,native}> : pkg_camltemplate, pkg_netcgi2-plex
 <blog.{byte,d.byte,p.native,native}> : pkg_cryptokit, pkg_sqlite3, pkg_netclient
-<blog.{byte,d.byte,p.native,native}> : pkg_lwt-equeue.ssl, pkg_equeue, pkg_batteries
+<blog.{byte,d.byte,p.native,native}> : pkg_lwt-equeue, pkg_batteries
+<blog.{byte,d.byte,p.native,native}> : pkg_lwt.ssl
 
 "markup/test_script.d.byte" : pkg_netplex, pkg_nethttpd, pkg_camltemplate, pkg_netcgi2-plex, pkg_cryptokit, pkg_sqlite3
 

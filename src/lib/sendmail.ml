@@ -172,33 +172,35 @@ module SMTP_client : SMTP_CLIENT =
 
 open SMTP_client
 
-let sendmail from_header to_header subject body ?(attachment) ?(more_headers = []) () : unit Lwt.t =
+let sendmail from_header to_header subject body ?(attachment) ?(more_headers = []) () : unit =
   Lazy.force set_unix_event_system;
   let email_as_string = create_message from_header to_header more_headers subject body attachment in
   let client = create ~hostname:"smtp.gmail.com" ~port:587 () in
-    Lwt.catch (fun () ->
-      client                                                          >>= fun c ->
-      (if Config.debug () then set_debug_level c 1 else Lwt.return c) >>= fun c ->
-      ehlo ~host:"localhost" c                                        >>= fun () ->
-      starttls c                                                      >>= fun () ->
-      ehlo ~host:"localhost" c                                        >>= fun () ->
-      login c (snd from_header) (Lazy.force Options.smtp_pwd)         >>= fun () ->
-      mail c (snd from_header)                                        >>= fun () ->
-      rcpt c "p.donadeo@gmail.com"                                    >>= fun () ->
-      data c email_as_string                                          >>= fun () ->
-      quit c
-    ) (fun exn ->
-      match exn with
-        | SMTP_error (code, msgs) -> (
-            Netplex_cenv.logf `Err "Sendmail.sendmail: SMTP_error, code = %d" code;
-            List.iter (fun msg -> Netplex_cenv.logf `Err "    %s" msg) msgs;
-            client >>= force_close
-          )
-        | e -> (
-            Netplex_cenv.logf `Err "Sendmail.sendmail: unexpected exception";
-            Netplex_cenv.logf `Err "    %s" (Printexc.to_string e);
-            client >>= force_close
-          )
+    Lwt_equeue.start (fun () ->
+      Lwt.catch (fun () ->
+        client                                                          >>= fun c ->
+        (if Config.debug () then set_debug_level c 1 else Lwt.return c) >>= fun c ->
+        ehlo ~host:"localhost" c                                        >>= fun () ->
+        starttls c                                                      >>= fun () ->
+        ehlo ~host:"localhost" c                                        >>= fun () ->
+        login c (snd from_header) (Lazy.force Options.smtp_pwd)         >>= fun () ->
+        mail c (snd from_header)                                        >>= fun () ->
+        rcpt c "p.donadeo@gmail.com"                                    >>= fun () ->
+        data c email_as_string                                          >>= fun () ->
+        quit c
+      ) (fun exn ->
+        match exn with
+          | SMTP_error (code, msgs) -> (
+              Netplex_cenv.logf `Err "Sendmail.sendmail: SMTP_error, code = %d" code;
+              List.iter (fun msg -> Netplex_cenv.logf `Err "    %s" msg) msgs;
+              client >>= force_close
+            )
+          | e -> (
+              Netplex_cenv.logf `Err "Sendmail.sendmail: unexpected exception";
+              Netplex_cenv.logf `Err "    %s" (Printexc.to_string e);
+              client >>= force_close
+            )
+      )
     )
 ;;
 
