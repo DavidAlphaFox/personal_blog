@@ -11,6 +11,16 @@ let blog_title_tfun ~args =
     | [] -> Tstr (Lazy.force blog_title)
     | _ -> raise (Tfun_error "Too many arguments")
 
+let my_name_tfun ~args =
+  match args with
+    | [] -> Tstr (Lazy.force my_name)
+    | _ -> raise (Tfun_error "Too many arguments")
+
+let my_email_address_tfun ~args =
+  match args with
+    | [] -> Tstr (Lazy.force my_email_address)
+    | _ -> raise (Tfun_error "Too many arguments")
+
 let abs_url ?(protocol = `http) path_query_frag =
   let scheme = match protocol with
     | `http -> "http" | `https -> "https" in
@@ -160,6 +170,8 @@ let create_default_context () =
     Hashtbl.add ctx "len" (Tfun len_tfun);
     Hashtbl.add ctx "abs_url" (Tfun abs_url_tfun);
     Hashtbl.add ctx "blog_title" (Tfun blog_title_tfun);
+    Hashtbl.add ctx "my_name" (Tfun my_name_tfun);
+    Hashtbl.add ctx "my_email_address" (Tfun my_email_address_tfun);
     Hashtbl.add ctx "facets" (Tfun facets_tfun);
     Hashtbl.add ctx "recent_posts" (Tfun recent_posts_tfun);
     Hashtbl.add ctx "escape_xml" (Tfun escape_xml_tfun);

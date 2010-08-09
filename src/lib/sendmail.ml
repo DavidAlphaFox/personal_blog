@@ -185,7 +185,7 @@ let sendmail from_header to_header subject body ?(attachment) ?(more_headers = [
         ehlo ~host:"localhost" c                                        >>= fun () ->
         login c (snd from_header) (Lazy.force Options.smtp_pwd)         >>= fun () ->
         mail c (snd from_header)                                        >>= fun () ->
-        rcpt c "p.donadeo@gmail.com"                                    >>= fun () ->
+        rcpt c (Lazy.force Options.my_email_address)                    >>= fun () ->
         data c email_as_string                                          >>= fun () ->
         quit c
       ) (fun exn ->

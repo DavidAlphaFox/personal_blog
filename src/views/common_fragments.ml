@@ -30,7 +30,7 @@ let admin_head page_name =
   let head_elements = [
       X.pc ""; (* Line feed *)
       X.title ((Lazy.force Options.blog_title) ^ " › " ^ page_name);
-      X.meta ~a:[X.a_name "author"] ~content:"Paolo Donadeo";
+      X.meta ~a:[X.a_name "author"] ~content:(Lazy.force Options.my_name);
       X.meta ~a:[X.a_http_equiv "content-type"] ~content:"application/xhtml+xml; charset=UTF-8";
       X.pc ""; (* Line feed *)
       X.comment ~line:true "The YUI CSS Foundation";

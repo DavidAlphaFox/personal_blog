@@ -11,16 +11,16 @@
     #end
     <lastBuildDate>${mk_mail_date(0, last_build_date)}</lastBuildDate>
     <title>${blog_title}#if (feed_title)/${feed_title}#end#</title>
-    <description>Paolo Donadeo's personal Internet site and blog</description>
+    <description>${my_name()}'s personal Internet site and blog</description>
     <link>${abs_url("/")}</link>
-    <managingEditor>pdonadeo@tautologica.org (Paolo Donadeo)</managingEditor>
+    <managingEditor>${my_email_address()} (${my_name()})</managingEditor>
 
     #foreach (post in posts)
       <item>
         <title>${post.title}</title>
         <link>${post.permalink}</link>
         <guid isPermaLink="true">${post.permalink}</guid>
-        <author>pdonadeo@tautologica.org (Paolo Donadeo)</author>
+        <author>${my_email_address()} (${my_name()})</author>
         <pubDate>${mk_mail_date(0, post.ctime)}</pubDate>
         <atom:updated>${format_date("%Y-%m-%dT%T.000Z", post.mtime)}</atom:updated>
 

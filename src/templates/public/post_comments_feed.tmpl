@@ -6,9 +6,9 @@
     <atom:link href="${post.permalink}/feed/" rel="self" type="application/rss+xml" />
     <lastBuildDate>${mk_mail_date(0, last_build_date)}</lastBuildDate>
     <title>Comments to “${post.title}”</title>
-    <description>Paolo Donadeo's personal Internet site and blog</description>
+    <description>${my_name()}'s personal Internet site and blog</description>
     <link>${post.permalink}</link>
-    <managingEditor>pdonadeo@tautologica.org (Paolo Donadeo)</managingEditor>
+    <managingEditor>${my_email_address()} (${my_name()})</managingEditor>
 
     #foreach (comment in post.post_comments)
       <item>
