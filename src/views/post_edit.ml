@@ -275,3 +275,29 @@ class ['g, 'p] main cgi : ['g, 'p] Types.service =
           )
   end
 
+let make_json status message =
+  spf " { \"status\" : \"%s\", \"message\" : \"%s\"} " status message
+
+class ['g, 'p] post_save cgi : ['g, 'p] Types.service =
+  object (self)
+    inherit ['g, 'p] view_base cgi
+
+    method post ((post_id, post_content) : 'p) =
+      let content_type = "application/json" in
+      match session with
+      | Blog_session.Anonymous _ -> new Http.response_redirect "/login" cgi
+      | Blog_session.Logged u -> begin
+          try
+            let old_post = Db.select_post post_id in
+            Db.update_post { old_post with post_content = Some post_content; };
+            let content = make_json "OK" "Post content saved!" in
+            new Http.response ~content ~content_type cgi
+          with
+          | e -> begin
+              let exc_str = Printexc.to_string e in
+              let content = make_json "KO" "An exception occurred: \"" ^ exc_str  ^ "\"" in
+              new Http.response ~content ~content_type cgi
+            end
+        end
+  end
+

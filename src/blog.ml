@@ -82,6 +82,11 @@ module Server_config =
          tpl3 (bool "comment_status") (bool "ping_status") (bool "private_status")
                             )))))))))))) |>
 
+      register_regexp_service "^/post-save/?$"
+        (new Post_edit.post_save)
+        unit                                            (* GET parameters *)
+        ((int "post_id") ** (string "post_content")) |> (* POST parameters *)
+
       register_regexp_service "^/post-list/?$"
         (new Post_list.main)
         (tpl3 (opt (string "post_status"))

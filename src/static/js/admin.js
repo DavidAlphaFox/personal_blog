@@ -139,6 +139,7 @@ Admin.post_edit_page = function() {
             '  <legend><strong>Last modified</strong></legend>',
             '  <input type="text" id="new_mtime" name="new_mtime" value="NOT INIT" />',
             '</fieldset>'].join('\n');
+    var control_key_is_down = false;
 
     function delete_confirmation_dialog() {
         var title = $('input#post_title').val();
@@ -193,6 +194,57 @@ Admin.post_edit_page = function() {
         return str;
     };
 
+    function handle_ctrl_s_keyup(event) {
+        if (event.which == 17) {
+            control_key_is_down = false;
+        }
+    };
+
+    function handle_ctrl_s_keydown(event) {
+        if (event.which == 17) {
+            control_key_is_down = true;
+        }
+        if (event.which == 83 && control_key_is_down) {
+            $('textarea#post_content').keyup(handle_ctrl_s_keyup);
+            $('textarea#post_content').keydown(handle_ctrl_s_keydown);
+        
+            var settings = {
+                cache :     false,
+                data :      {
+                                'post_id' :         $('input[name=post_id]').val(),
+                                'post_content' :    $('textarea#post_content').val()
+                            },
+                dataType :  'json',
+                error :     function (XMLHttpRequest, textStatus, errorThrown) {
+                                    $('div#ajax_messages p').addClass('error');
+                                    $('div#ajax_messages p').removeClass('message');
+                                    $('div#ajax_messages p').html('Communication error: ' + textStatus);
+                                    $('div#ajax_messages').fadeIn(500);
+                            },
+                success :   function (data, textStatus) {
+                                if (data.status == 'OK') {
+                                    $('div#ajax_messages p').removeClass('error');
+                                    $('div#ajax_messages p').addClass('message');
+                                    $('div#ajax_messages p').html(data.message);
+                                    $('div#ajax_messages').fadeIn(500, function () {
+                                                setTimeout('$(\'div#ajax_messages\').fadeOut(300)', 1500)
+                                            });
+                                }
+                                else {
+                                    $('div#ajax_messages p').addClass('error');
+                                    $('div#ajax_messages p').removeClass('message');
+                                    $('div#ajax_messages p').html('Communication error: ' + data.message);
+                                    $('div#ajax_messages').fadeIn(500);
+                                }
+                            },
+                type :      'POST',
+                url :       '/post-save',
+            };
+            $.ajax(settings);
+            return false;
+        }
+    };
+
     function make_slug() {
         var title = $(this).val();
         $('#new_post_slug').val(string_to_slug(title));
@@ -210,6 +262,8 @@ Admin.post_edit_page = function() {
         $('#ts_change').click(change_timestamps_button_setup);
         $('span.tag + :checkbox').click(checkbox_onclick);
         $('#post_title').change(make_slug);
+        $('textarea#post_content').keyup(handle_ctrl_s_keyup);
+        $('textarea#post_content').keydown(handle_ctrl_s_keydown);
     };
 
     return public;
