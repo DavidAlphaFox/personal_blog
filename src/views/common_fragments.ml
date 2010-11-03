@@ -192,48 +192,49 @@ let page_menu =
             let hd, tl = List.hd roots, List.tl roots in
               X.div ~a:[X.a_id "main-nav"; X.a_class "col"] [
                   X.ul (X.li ~a:[X.a_class "page_item"] [
-                    X.a ~a:[X.a_rel [`bookmark]; X.a_title !!(hd.page_title); X.a_href (_u hd.page_url_title)]
-                        [ X.pc !!(hd.page_title) ]
+                    X.a ~a:[X.a_rel [`bookmark]; X.a_title !!((Lazy_tree.data hd).page_title); X.a_href (_u (Lazy_tree.data hd).page_url_title)]
+                        [ X.pc !!((Lazy_tree.data hd).page_title) ]
                       ] )
                     (List.map (fun li -> X.li ~a:[X.a_class "page_item"] [
                                   X.a ~a:[X.a_rel [`bookmark]; X.a_title !!(li.page_title); X.a_href (_u li.page_url_title)]
                                   [ X.pc !!(li.page_title) ]
                                 ]
-                              ) tl)
+                              ) (List.map Lazy_tree.data tl))
                 ]
           end
         | Some id -> begin
             let current_page = List.find
-                                (fun p -> if p.page_id = id then true else false)
+                                (fun p -> if Lazy_tree.id p = id then true else false)
                                 (Lazy.force Db.page_db |> snd) in
-            let page_parent_id = current_page.page_parent_id in
+            let page_parent_id = Lazy_tree.parent_id current_page in
             let li_list = if page_parent_id = None
                           then []
                           else
-                            let parent_page = Lazy.force (!!(current_page.page_parent)) in
+                            let parent_page = !!(Lazy_tree.parent current_page) in
                               [
                                 X.li ~a:[X.a_class "page_item"] [
-                                  X.a ~a:[X.a_title "Go up"; X.a_href (_u parent_page.page_url_title)]
+                                  X.a ~a:[X.a_title "Go up"; X.a_href (_u (Lazy_tree.data parent_page).page_url_title)]
                                     [ X.pc "Go up" ]
                                 ]
                               ] in
             let li_list = li_list @ [
-                X.li ~a:[X.a_class "page_item current_page_item"] [ X.pc !!(current_page.page_title) ]
+                X.li ~a:[X.a_class "page_item current_page_item"] [ X.pc !!((Lazy_tree.data current_page).page_title) ]
               ] in
             let li_list = li_list @ (List.map
               (
                 fun p ->
+                  let p = Lazy_tree.data p in
                   X.li ~a:[X.a_class "page_item"] [
                       X.a ~a:[X.a_title !!(p.page_title); X.a_href (_u p.page_url_title)] [ X.pc !!(p.page_title) ]
                     ]
-              ) current_page.page_children) in
+              ) (Lazy_tree.children current_page)) in
               X.div ~a:[X.a_id "main-nav"; X.a_class "col"] [
                   X.ul (List.hd li_list) (List.tl li_list)
                 ]
           end
     in (* END OF page_menu_aux *)
       List.fold_left
-        (fun map page -> let id = Some page.page_id in (id, page_menu_aux id)::map)
+        (fun map page -> let id = Some (Lazy_tree.id page) in (id, page_menu_aux id)::map)
         [ (None, page_menu_aux None) ]
         (Lazy.force Db.page_db |> snd)
   ) in (* menu_map *)

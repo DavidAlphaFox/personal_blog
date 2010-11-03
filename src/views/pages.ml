@@ -11,7 +11,7 @@ let (<--) = Template.Context.(<--)
 let pages_regexps = lazy (
     let _, pages = Lazy.force Db.page_db in
       List.fold_left
-        (fun acc page -> (Pcre.regexp ("^" ^ (page.page_url_title) ^ "/?$"), page)::acc)
+        (fun acc page -> (Pcre.regexp ("^" ^ ((Lazy_tree.data page).page_url_title) ^ "/?$"), page)::acc)
         []
         pages |> List.rev
   )
@@ -26,7 +26,7 @@ let selector script_name =
           with Not_found -> false
       )
       (Lazy.force pages_regexps) |> snd in
-      Some ("", BatMap.StringMap.add "page_id" (string_of_int page.page_id) BatMap.StringMap.empty)
+      Some ("", BatMap.StringMap.add "page_id" (string_of_int (Lazy_tree.id page)) BatMap.StringMap.empty)
   with
     | Not_found -> None
 
@@ -40,9 +40,11 @@ class ['g, 'p] page cgi : ['g, 'p] Types.service =
     inherit ['g, 'p] view_base cgi
 
     method private render_page ?(cache = `No_cache) ?(headers = []) page auth_ok error =
-        ctx<--("top_menu", Tstr (X.string_of_element (page_menu (Some page.page_id))));
+        let page_id = Lazy_tree.id page in
+        let page = Lazy_tree.data page in
+        ctx<--("top_menu", Tstr (X.string_of_element (page_menu (Some page_id))));
         ctx<--("page_title", Tstr !!(page.page_title));
-        ctx<--("page_id", Tint page.page_id);
+        ctx<--("page_id", Tint page_id);
         ctx<--("page_url", Tstr page.page_url_title);
         ctx<--("js_object_name", Tstr "pages");
         ctx<--("auth_ok", Tbool auth_ok);
@@ -62,23 +64,24 @@ class ['g, 'p] page cgi : ['g, 'p] Types.service =
       self#old_browser_warning ();
       self#include_google_analytics ();
       let current_page = List.find
-                          (fun p -> if p.page_id = id then true else false)
+                          (fun p -> if (Lazy_tree.id p) = id then true else false)
                           (Lazy.force Db.page_db |> snd) in
+      let current_page' = Lazy_tree.data current_page in
       let headers, cache =
-        match current_page.page_password with
+        match current_page'.page_password with
           | Some _ -> [], `No_cache
-          | None -> [ `Last_Modified current_page.page_mtime ], `Unspecified in
+          | None -> [ `Last_Modified current_page'.page_mtime ], `Unspecified in
       let auth_ok =
-        match current_page.page_password, self#get_session () with
+        match current_page'.page_password, self#get_session () with
           | Some _, Blog_session.Anonymous (l, _) when (not_in_list l id) -> false
           | _, _                                                          -> true in
         self#render_page ~headers ~cache current_page auth_ok false
 
     method post ((id, password) : 'p) =
       let page = List.find
-                  (fun p -> if p.page_id = id then true else false)
+                  (fun p -> if (Lazy_tree.id p) = id then true else false)
                   (Lazy.force Db.page_db |> snd) in
-        if page.page_password = Some password
+        if (Lazy_tree.data page).page_password = Some password
         then
           let new_session =
             match self#get_session () with

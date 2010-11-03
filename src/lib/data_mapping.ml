@@ -3,6 +3,7 @@ TYPE_CONV_PATH "Data_mapping"
 open BatStd
 open BatMap
 open Utilities
+open Lazy_tree
 
 let (-->) = StringMap.Infix.(-->)
 let (<--) = StringMap.Infix.(<--)
@@ -166,11 +167,6 @@ let map_of_post p =
 
 type page =
   {
-    page_id : int;
-    page_parent_id : int option;
-    page_parent : (page Lazy.t) option;
-    page_position : int;
-    page_children : page list;
     page_mtime : float;
     page_title : string option;
     page_url_title : string;
@@ -178,7 +174,8 @@ type page =
     page_password : string option;
   }
 
-type page_db = page list * page list (* the list of roots, actually a tree; the flat list of all pages *)
+type page_db = (page, [`complete]) tree * (page, [`complete]) tree_node list
+               (* the list of roots, actually a tree; the flat list of all pages *)
 
 type inet_addr = Unix.inet_addr
 type str = string with sexp;;

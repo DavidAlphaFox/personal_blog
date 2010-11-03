@@ -552,54 +552,24 @@ let get_raw_data () =
   List.map
     (
       fun record ->
-        {
-          page_id = !!(record-->"page_id") |> int_of_string;
-          page_parent_id = (match record-->"parent_page" with None -> None | Some id -> Some (int_of_string id));
-          page_parent = None; (* PLACEHOLDER *)
-          page_position = !!(record-->"position") |> int_of_string;
-          page_children = []; (* PLACEHOLDER *)
-          page_mtime = !!(record-->"mtime") |> Netdate.parse_epoch;
-          page_title = record-->"title";
-          page_url_title = !!(record-->"url_title");
-          page_template = !!(record-->"template");
-          page_password = record-->"password";
-        }
+        let id = !!(record-->"page_id") |> int_of_string in
+        let parent_id = (match record-->"parent_page" with None -> None | Some id -> Some (int_of_string id)) in
+        let pos = !!(record-->"position") |> int_of_string in
+        let data = {
+            page_mtime = !!(record-->"mtime") |> Netdate.parse_epoch;
+            page_title = record-->"title";
+            page_url_title = !!(record-->"url_title");
+            page_template = !!(record-->"template");
+            page_password = record-->"password";
+          } in
+        Lazy_tree.new_node ~id ~parent_id ~pos ~data
     )
     (get_all_records ())
 
-let build_pages_tree (raw_data : page list) : page list =
-  let rec aux (raw_data : page list)
-              (parent : page Lazy.t option)
-              (parent_id : int option) =
-    let children, rest =
-      List.partition (fun el -> if el.page_parent_id = parent_id then true else false) raw_data in
-
-    let children, rest =
-      List.fold_left
-      (
-        fun (new_children, rest) page ->
-          let rec new_page = lazy (
-            let complete_children, rest = aux rest (Some new_page) (Some page.page_id) in
-              { page with
-                  page_parent = parent;
-                  page_children = complete_children;
-              }
-          ) in
-            (Lazy.force new_page)::new_children, rest
-      )
-      ([], rest)
-      children in
-      List.rev children, rest
-  in (* END of aux *)
-    aux raw_data None None |> fst
-
-let rec flat_pages (tree : page list) : page list =
-  List.fold_left (fun acc page -> acc @ [page] @ (flat_pages page.page_children)) [] tree
-
 let page_db : Data_mapping.page_db Lazy.t =
   lazy (
-    let tree = get_raw_data () |> build_pages_tree in
-    let flat = flat_pages tree in
+    let tree = get_raw_data () |> Lazy_tree.build_tree in
+    let flat = Lazy_tree.flat_tree tree in
       tree, flat
   )
 
